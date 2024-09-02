@@ -1,0 +1,71 @@
+def is_valid(board, row, col, num, n):
+    for x in range(n):
+        if board[row][x] == num:
+            return False
+
+    for x in range(n):
+        if board[x][col] == num:
+            return False
+
+    box_size = int(n ** 0.5)
+    start_row = row - row % box_size
+    start_col = col - col % box_size
+    for i in range(box_size):
+        for j in range(box_size):
+            if board[i + start_row][j + start_col] == num:
+                return False
+    return True
+
+
+def solve_sudoku(board,n):
+    for i in range(n):
+        for j in range(n):
+            if board[i][j] == 0:
+                for num in range(1, n + 1):
+                    if is_valid(board, i, j, num, n):
+                        board[i][j] = num
+                        if solve_sudoku(board,n):
+                            return True
+                        board[i][j] = 0
+                return False
+    return True
+
+
+def print_board(board,n):
+    box_size = int(n ** 0.5)
+    for i in range(n):
+        if i % box_size == 0 and i != 0:
+            print("- " * n)
+
+        for j in range(n):
+            if j % box_size == 0 and j != 0:
+                print(" | ", end="")
+
+            if j == n - 1:
+                print(board[i][j])
+            else:
+                print(str(board[i][j]) + " ", end="")
+
+
+def main():
+    print("-----------------------------")
+    print("Sudoku solver extraordinaire, at your service! Let's crack this puzzle.")
+    print("-----------------------------")
+    n = int(input("Unleash your Sudoku spirit! How big is your puzzle arena?"))
+    print("-----------------------------")
+    board = []
+    for i in range(n):
+        row = list(map(int, input("Enter row {}: ".format(i + 1)).split()))
+        board.append(row)
+
+    if solve_sudoku(board,n):
+        print("Solved Sudoku board:")
+        print_board(board,n)
+    else:
+        print("No solution exists")
+    
+    print("-----------------------------")
+
+
+if __name__ == "__main__":
+    main()
